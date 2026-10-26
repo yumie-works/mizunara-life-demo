@@ -9,6 +9,7 @@
 |---|---|---|
 | v1 | https://yumie-works.github.io/mizunara-life-demo/ | 基本版 |
 | v2 | https://yumie-works.github.io/mizunara-life-demo/v2.html | v1から文言・ロケーターのみ変更（動作は同じ） |
+| v2-1 | https://yumie-works.github.io/mizunara-life-demo/v2-1.html | v2から、表示文言・申込番号の形式を一部変更 |
 
 ## 申込の流れ
 
@@ -66,35 +67,23 @@
 | | btn-submit／btn-zip-search | submit-application／zip-autofill |
 | | 契約者欄の `c-`（例：c-last、c-email） | `contractor-`（例：contractor-last、contractor-email） |
 
+## v2-1での変更点（v2との差分）
+
+| 箇所 | v2 | v2-1 |
+|---|---|---|
+| 見積り・確認画面の保険の種類 | 定期保険 | 定期保険（無解約返戻金型） |
+| 完了画面の見出し | お申込みを受け付けました | お申込みが完了しました |
+| 申込番号の形式 | MZ-年月日-5桁 | MZL-年月日-5桁 |
+
+プラン選択画面のカード名（定期保険）は変更していません。
+
 ## ファイル構成
 
 ```
 index.html   … v1
 v2.html      … v2
+v2-1.html    … v2-1
 README.md    … このファイル
 ```
-
-どのページも1つのHTMLファイルで完結しています（フォントのみGoogle Fontsから読み込み）。
-
-画面の動作・入力ルールは同じで、文言とロケーターだけを変えています。
-
-種類	v1	v2
-ボタン	契約者情報の入力へ進む／受取人の入力へ進む／告知の入力へ進む	次へ
-	入力内容の確認へ進む	確認画面へ
-	この内容で申し込む	申し込む
-	戻る	前へ
-	住所を検索	住所自動入力
-ラベル	セイ（全角カナ）／メイ（全角カナ）	フリガナ（姓）／フリガナ（名）
-	メールアドレス（確認用）	メールアドレス（再入力）
-	契約者と保障を受ける方は同じ	契約者本人が保障を受ける
-見出し	契約者情報を入力する	ご契約者さまの情報
-ステップ表示	契約者情報	ご契約者
-id・data-testid	btn-next-1〜4	next-plan／next-contractor／next-beneficiary／next-disclosure
-	btn-submit／btn-zip-search	submit-application／zip-autofill
-	契約者欄の c-（例：c-last、c-email）	contractor-（例：contractor-last、contractor-email）
-ファイル構成
-index.html   … v1
-v2.html      … v2
-README.md    … このファイル
 
 どのページも1つのHTMLファイルで完結しています（フォントのみGoogle Fontsから読み込み）。

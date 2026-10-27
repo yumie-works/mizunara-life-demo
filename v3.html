@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>保険のお申込み | みずなら生命（デモ v3）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16313F; --sub:#4F6672; --line:#CBD6D3; --paper:#FBFCFB; --surface:#FFFFFF;
+  --sage:#EDF3EE; --oak:#2E6A4E; --oak-strong:#235740; --on-oak:#FFFFFF;
+  --err:#B42318; --err-bg:#FDF0EE; --warn:#8A5A00; --warn-bg:#FFF6E0;
+  --focus:#1D6FB8;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E4ECE8; --sub:#A3B5AE; --line:#3A4A47; --paper:#131B1A; --surface:#1A2422;
+    --sage:#1F2E2A; --oak:#5FB38A; --oak-strong:#7CC9A2; --on-oak:#0E1A15;
+    --err:#FF8A7A; --err-bg:#3A1F1C; --warn:#F2C062; --warn-bg:#3A2F15; --focus:#7DB8F0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E4ECE8; --sub:#A3B5AE; --line:#3A4A47; --paper:#131B1A; --surface:#1A2422;
+  --sage:#1F2E2A; --oak:#5FB38A; --oak-strong:#7CC9A2; --on-oak:#0E1A15;
+  --err:#FF8A7A; --err-bg:#3A1F1C; --warn:#F2C062; --warn-bg:#3A2F15; --focus:#7DB8F0;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;font-size:16px;line-height:1.75}
+.mincho{font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif}
+
+.site{background:var(--surface);border-bottom:1px solid var(--line)}
+.site-inner{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:700;letter-spacing:.06em}
+.logo svg{width:30px;height:30px;flex:none}
+.demo-tag{font-size:.78rem;border:1px solid var(--oak);color:var(--oak);padding:1px 10px;border-radius:999px}
+.site-tel{margin-left:auto;font-size:.85rem;color:var(--sub)}
+.demo-note{background:var(--sage);font-size:.85rem;color:var(--sub);text-align:center;padding:8px 16px}
+
+main{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+h1{font-size:clamp(1.6rem,3.2vw,2.1rem);margin:0 0 6px;letter-spacing:.04em}
+.lead{margin:0 0 26px;color:var(--sub)}
+
+.stepper{list-style:none;margin:0 0 30px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);border-top:3px solid var(--line)}
+.stepper li{position:relative;padding:10px 6px 0 0;font-size:.85rem;color:var(--sub);line-height:1.4}
+.stepper li::before{content:"";position:absolute;top:-3px;left:0;right:0;height:3px;background:transparent}
+.stepper .num{display:block;font-family:"Zen Old Mincho",serif;font-size:1.25rem;font-weight:700}
+.stepper li.done{color:var(--ink)}
+.stepper li.done::before{background:var(--oak)}
+.stepper li.current{color:var(--oak-strong);font-weight:700}
+.stepper li.current::before{background:var(--oak)}
+@media (max-width:640px){.stepper .label{display:none}.stepper li.current .label{display:block}}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:36px;align-items:start}
+@media (max-width:880px){.layout{grid-template-columns:1fr}}
+
+section.step{display:none}
+section.step.active{display:block}
+h2{font-size:1.35rem;margin:0 0 4px}
+.step-desc{margin:0 0 22px;color:var(--sub);font-size:.95rem}
+fieldset{border:0;margin:0 0 30px;padding:0}
+legend{font-weight:700;font-size:1.05rem;padding:0 0 10px;border-bottom:1px solid var(--line);width:100%;margin-bottom:16px}
+
+.field{margin:0 0 20px}
+.field > label, .field .group-label{display:block;font-weight:500;margin-bottom:6px}
+.req{display:inline-block;margin-left:8px;font-size:.72rem;color:var(--err);border:1px solid currentColor;border-radius:3px;padding:0 5px;vertical-align:2px;font-weight:500}
+.opt{display:inline-block;margin-left:8px;font-size:.72rem;color:var(--sub);border:1px solid currentColor;border-radius:3px;padding:0 5px;vertical-align:2px}
+.hint{font-size:.82rem;color:var(--sub);margin:4px 0 0}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.row > *{flex:1 1 140px}
+.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.inline select{width:auto}
+
+input[type=text],input[type=email],input[type=tel],input[type=number],select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-height:46px}
+textarea{min-height:90px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.choice input:focus-visible + span{outline:3px solid var(--focus);outline-offset:2px}
+.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--err);background:var(--err-bg)}
+.err{display:none;color:var(--err);font-size:.85rem;margin-top:6px}
+.field.invalid .err{display:block}
+
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+.choice{position:relative;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:6px;padding:10px 14px;background:var(--surface);cursor:pointer;min-height:46px}
+.choice input{accent-color:var(--oak);width:18px;height:18px;margin:0}
+.choice:has(input:checked){border-color:var(--oak);background:var(--sage)}
+.field.invalid .choice{border-color:var(--err)}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:640px){.plans{grid-template-columns:1fr}}
+.plan{display:block;border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--surface);cursor:pointer;position:relative}
+.plan input{position:absolute;top:16px;right:16px;accent-color:var(--oak);width:18px;height:18px}
+.plan strong{display:block;font-family:"Zen Old Mincho",serif;font-size:1.15rem;margin-bottom:4px}
+.plan span{font-size:.85rem;color:var(--sub);display:block;line-height:1.6}
+.plan:has(input:checked){border-color:var(--oak);box-shadow:inset 0 0 0 1px var(--oak);background:var(--sage)}
+
+.panel{border-radius:8px;padding:14px 16px;margin:0 0 20px;font-size:.92rem}
+.panel.warn{background:var(--warn-bg);color:var(--warn)}
+.panel.stop{background:var(--err-bg);color:var(--err);border:1px solid var(--err)}
+.panel.info{background:var(--sage)}
+.panel p{margin:0}
+.hidden{display:none !important}
+.error-summary{display:none}
+.error-summary.show{display:block}
+
+.btns{display:flex;gap:12px;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border-radius:6px;min-height:48px;padding:10px 26px}
+.btn-primary{background:var(--oak);color:var(--on-oak);border:1px solid var(--oak);font-weight:700;margin-left:auto;min-width:200px}
+.btn-primary:hover{background:var(--oak-strong);border-color:var(--oak-strong)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn-small{min-height:46px;padding:8px 16px;background:var(--surface);border:1px solid var(--oak);color:var(--oak);font-weight:500;white-space:nowrap}
+.btn-link{background:none;border:0;color:var(--oak);text-decoration:underline;padding:0;min-height:auto;font-size:.9rem}
+
+.quote{position:sticky;top:calc(16px + env(safe-area-inset-top,0px));border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.quote-head{background:var(--oak);color:var(--on-oak);padding:12px 18px;font-weight:700}
+.quote-body{padding:18px}
+.quote dl{margin:0 0 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.9rem}
+.quote dt{color:var(--sub)}
+.quote dd{margin:0;text-align:right}
+.price{border-top:1px solid var(--line);padding-top:14px}
+.price .label{font-size:.88rem;color:var(--sub)}
+.price .amount{font-family:"Zen Old Mincho",serif;font-size:2.3rem;font-weight:700;line-height:1.2;letter-spacing:.02em}
+.price .amount small{font-size:1rem;margin-left:4px}
+.price .note{font-size:.78rem;color:var(--sub);margin:6px 0 0}
+@media (max-width:880px){.quote{position:static;order:-1}}
+
+.confirm-block{border:1px solid var(--line);border-radius:8px;margin:0 0 18px;background:var(--surface)}
+.confirm-block header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--sage);border-radius:8px 8px 0 0}
+.confirm-block h3{margin:0;font-size:1rem}
+.confirm-block dl{margin:0;padding:12px 16px;display:grid;grid-template-columns:minmax(110px,180px) 1fr;gap:6px 16px;font-size:.93rem}
+.confirm-block dt{color:var(--sub)}
+.confirm-block dd{margin:0;word-break:break-all}
+.agree{display:flex;gap:10px;align-items:flex-start;padding:12px 0}
+.agree input{width:20px;height:20px;accent-color:var(--oak);margin-top:4px;flex:none}
+
+.complete{text-align:center;padding:30px 0}
+.complete .seal{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;border:2px solid var(--oak);display:grid;place-items:center;color:var(--oak)}
+.complete .seal svg{width:40px;height:40px}
+.app-no{display:inline-block;font-family:"Zen Old Mincho",serif;font-size:1.6rem;font-weight:700;border-bottom:2px solid var(--oak);padding:0 6px;margin:6px 0 20px;letter-spacing:.06em}
+.complete p{max-width:36em;margin:0 auto 12px;color:var(--sub)}
+
+footer{border-top:1px solid var(--line);color:var(--sub);font-size:.8rem;text-align:center;padding:20px}
+@media (prefers-reduced-motion: no-preference){
+  section.step.active{animation:show .25s ease-out}
+  @keyframes show{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="site-inner">
+    <div class="logo mincho" data-testid="logo">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c-5 3-9 8-9 14 0 5 4 9 9 9s9-4 9-9c0-6-4-11-9-14z" fill="var(--oak)"/><path d="M16 8v21" stroke="var(--surface)" stroke-width="1.6"/><path d="M16 15l-4-3M16 19l5-3.5M16 23l-4.5-3" stroke="var(--surface)" stroke-width="1.4" fill="none"/></svg>
+      みずなら生命
+    </div>
+    <span class="demo-tag">デモサイト v3</span>
+    <span class="site-tel">お客さま窓口 0120-XXX-XXX（架空）</span>
+  </div>
+</header>
+<div class="demo-note" role="note">このサイトはテスト自動化デモ用の架空のサイトです。実在の保険会社・商品とは関係なく、入力内容は保存も送信もされません。</div>
+
+<main>
+  <h1 class="mincho" id="page-title">保険のお申込み</h1>
+  <p class="lead" id="page-lead">5つのステップでお申込みが完了します。所要時間はおよそ10分です。</p>
+
+  <ol class="stepper" id="stepper" aria-label="お申込みの進み具合">
+    <li data-s="1"><span class="num">1</span><span class="label">プラン選択</span></li>
+    <li data-s="2"><span class="num">2</span><span class="label">ご契約者</span></li>
+    <li data-s="3"><span class="num">3</span><span class="label">受取人</span></li>
+    <li data-s="4"><span class="num">4</span><span class="label">告知</span></li>
+    <li data-s="5"><span class="num">5</span><span class="label">確認</span></li>
+  </ol>
+
+  <div class="layout">
+    <div id="app">
+      <div class="panel stop error-summary" id="error-summary" role="alert" tabindex="-1" data-testid="error-summary"></div>
+
+      <!-- STEP 1 -->
+      <section class="step active" id="step-1" data-step="1" aria-labelledby="h-step-1">
+        <h2 class="mincho" id="h-step-1">プランを選ぶ</h2>
+        <p class="step-desc">保障を受ける方（被保険者）の生年月日と性別から保険料を計算します。</p>
+
+        <fieldset>
+          <legend>保障を受ける方</legend>
+          <div class="field" id="f-ins-birth">
+            <label for="ins-birth" id="lbl-ins-birth">生年月日<span class="req">必須</span></label>
+            <input type="text" id="ins-birth" name="ins-birth" inputmode="numeric" autocomplete="bday" placeholder="1990/01/15" style="max-width:220px" data-testid="ins-birth">
+            <p class="hint">「1990/01/15」のように、年／月／日の形式で入力してください。お申込みいただけるのは満20歳から満70歳までの方です。</p>
+            <p class="err" id="err-ins-birth"></p>
+          </div>
+          <div class="field" id="f-ins-gender">
+            <label for="ins-gender" id="lbl-ins-gender">性別<span class="req">必須</span></label>
+            <select id="ins-gender" name="ins-gender" style="max-width:220px" data-testid="ins-gender">
+              <option value="">選択してください</option>
+              <option value="male">男性</option>
+              <option value="female">女性</option>
+            </select>
+            <p class="err" id="err-ins-gender"></p>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>保険の種類</legend>
+          <div class="field" id="f-plan">
+            <div class="plans" role="radiogroup" aria-label="保険の種類">
+              <label class="plan"><input type="radio" name="plan" id="plan-term" value="term" data-testid="plan-term" checked><strong>定期保険</strong><span>一定期間の死亡・高度障害に備える。保険料を抑えたい方に。</span></label>
+              <label class="plan"><input type="radio" name="plan" id="plan-medical" value="medical" data-testid="plan-medical"><strong>医療保険</strong><span>入院・手術に一生涯備える。入院1日あたりの金額を選べます。</span></label>
+              <label class="plan"><input type="radio" name="plan" id="plan-whole" value="whole" data-testid="plan-whole"><strong>終身保険</strong><span>一生涯の死亡保障。保障が途切れません。</span></label>
+            </div>
+            <p class="err" id="err-plan"></p>
+          </div>
+          <div class="row">
+            <div class="field" id="f-coverage">
+              <label for="coverage" id="lbl-coverage">死亡保険金額<span class="req">必須</span></label>
+              <select id="coverage" name="coverage" data-testid="coverage"></select>
+              <p class="err" id="err-coverage"></p>
+            </div>
+            <div class="field" id="f-term">
+              <label for="term">保険期間<span class="req">必須</span></label>
+              <select id="term" name="term" data-testid="term">
+                <option value="10">10年</option>
+                <option value="20" selected>20年</option>
+                <option value="30">30年</option>
+              </select>
+              <p class="hint hidden" id="term-whole-note">終身（一生涯）</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>特約（オプション）</legend>
+          <div class="field">
+            <div class="choices" style="flex-direction:column">
+              <label class="choice"><input type="checkbox" id="rider-advanced" name="rider-advanced" data-testid="rider-advanced"><span>先進医療特約（先進医療の技術料を通算2,000万円まで保障）</span></label>
+              <label class="choice"><input type="checkbox" id="rider-cancer" name="rider-cancer" data-testid="rider-cancer"><span>がん診断一時金特約（がんと診断されたら100万円）</span></label>
+              <label class="choice"><input type="checkbox" id="rider-waiver" name="rider-waiver" data-testid="rider-waiver"><span>三大疾病保険料払込免除特約</span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>払込方法</legend>
+          <div class="field" id="f-payment">
+            <div class="choices" role="radiogroup" aria-label="払込方法">
+              <label class="choice"><input type="radio" name="payment" id="payment-monthly" value="monthly" checked data-testid="payment-monthly"><span>月払い</span></label>
+              <label class="choice"><input type="radio" name="payment" id="payment-annual" value="annual" data-testid="payment-annual"><span>年払い（2%割安）</span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="btns">
+          <button type="button" class="btn-primary" id="next-plan" data-testid="next-plan">次へ</button>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" id="step-2" data-step="2" aria-labelledby="h-step-2">
+        <h2 class="mincho" id="h-step-2">ご契約者さまの情報</h2>
+        <p class="step-desc">保険料を支払い、契約の手続きを行う方（契約者）の情報を入力してください。</p>
+
+        <div class="field">
+          <label class="choice" style="display:inline-flex"><input type="checkbox" id="same-as-insured" name="same-as-insured" checked data-testid="same-as-insured"><span>契約者本人が保障を受ける</span></label>
+        </div>
+
+        <fieldset>
+          <legend>契約者</legend>
+          <div class="row">
+            <div class="field" id="f-contractor-last"><label for="contractor-last">姓<span class="req">必須</span></label><input type="text" id="contractor-last" name="contractor-last" autocomplete="family-name" placeholder="山田" data-testid="contractor-last"><p class="err"></p></div>
+            <div class="field" id="f-contractor-first"><label for="contractor-first">名<span class="req">必須</span></label><input type="text" id="contractor-first" name="contractor-first" autocomplete="given-name" placeholder="花子" data-testid="contractor-first"><p class="err"></p></div>
+          </div>
+          <div class="row">
+            <div class="field" id="f-contractor-last-kana"><label for="contractor-last-kana">フリガナ（姓）<span class="req">必須</span></label><input type="text" id="contractor-last-kana" name="contractor-last-kana" placeholder="ヤマダ" data-testid="contractor-last-kana"><p class="err"></p></div>
+            <div class="field" id="f-contractor-first-kana"><label for="contractor-first-kana">フリガナ（名）<span class="req">必須</span></label><input type="text" id="contractor-first-kana" name="contractor-first-kana" placeholder="ハナコ" data-testid="contractor-first-kana"><p class="err"></p></div>
+          </div>
+
+          <div id="contractor-extra" class="hidden">
+            <div class="field" id="f-c-birth">
+              <span class="group-label" id="lbl-c-birth">生年月日<span class="req">必須</span></span>
+              <div class="inline" role="group" aria-labelledby="lbl-c-birth">
+                <select id="c-birth-year" name="c-birth-year" aria-label="年" data-testid="c-birth-year"></select><span>年</span>
+                <select id="c-birth-month" name="c-birth-month" aria-label="月" data-testid="c-birth-month"></select><span>月</span>
+                <select id="c-birth-day" name="c-birth-day" aria-label="日" data-testid="c-birth-day"></select><span>日</span>
+              </div>
+              <p class="hint">契約者は満18歳以上の方に限ります。</p>
+              <p class="err"></p>
+            </div>
+            <div class="field" id="f-c-gender">
+              <span class="group-label" id="lbl-c-gender">性別<span class="req">必須</span></span>
+              <div class="choices" role="radiogroup" aria-labelledby="lbl-c-gender">
+                <label class="choice"><input type="radio" name="c-gender" id="c-gender-male" value="male" data-testid="c-gender-male"><span>男性</span></label>
+                <label class="choice"><input type="radio" name="c-gender" id="c-gender-female" value="female" data-testid="c-gender-female"><span>女性</span></label>
+              </div>
+              <p class="err"></p>
+            </div>
+          </div>
+
+          <div class="field" id="f-contractor-zip">
+            <label for="contractor-zip">郵便番号<span class="req">必須</span></label>
+            <div class="inline">
+              <input type="text" id="contractor-zip" name="contractor-zip" inputmode="numeric" autocomplete="postal-code" placeholder="100-0001" style="max-width:180px" data-testid="contractor-zip">
+            </div>
+            <p class="hint" id="zip-result" aria-live="polite">郵便番号を7桁入力すると、住所が自動で入力されます。デモ用の郵便番号：100-0001／530-0001／460-0008／812-0011／060-0001</p>
+            <p class="err"></p>
+          </div>
+          <div class="field" id="f-contractor-addr1"><label for="contractor-addr1">都道府県・市区町村<span class="req">必須</span></label><input type="text" id="contractor-addr1" name="contractor-addr1" autocomplete="address-level1" placeholder="東京都千代田区千代田" data-testid="contractor-addr1"><p class="err"></p></div>
+          <div class="field" id="f-contractor-addr2"><label for="contractor-addr2">番地・建物名<span class="req">必須</span></label><input type="text" id="contractor-addr2" name="contractor-addr2" autocomplete="address-line2" placeholder="1-1 みずならハイツ101" data-testid="contractor-addr2"><p class="err"></p></div>
+          <div class="field" id="f-contractor-tel"><label for="contractor-tel">電話番号<span class="req">必須</span></label><input type="tel" id="contractor-tel" name="contractor-tel" autocomplete="tel" placeholder="090-1234-5678" style="max-width:260px" data-testid="contractor-tel"><p class="hint">ハイフンはあってもなくても構いません。</p><p class="err"></p></div>
+          <div class="field" id="f-contractor-email"><label for="contractor-email">メールアドレス<span class="req">必須</span></label><input type="email" id="contractor-email" name="contractor-email" autocomplete="email" placeholder="hanako@example.com" data-testid="contractor-email"><p class="err"></p></div>
+          <div class="field" id="f-contractor-email-confirm"><label for="contractor-email-confirm">メールアドレス（再入力）<span class="req">必須</span></label><input type="email" id="contractor-email-confirm" name="contractor-email-confirm" autocomplete="off" data-testid="contractor-email-confirm"><p class="err"></p></div>
+        </fieldset>
+
+        <fieldset id="insured-block" class="hidden">
+          <legend>保障を受ける方（被保険者）</legend>
+          <div class="row">
+            <div class="field" id="f-i-last"><label for="i-last">姓<span class="req">必須</span></label><input type="text" id="i-last" name="i-last" data-testid="i-last"><p class="err"></p></div>
+            <div class="field" id="f-i-first"><label for="i-first">名<span class="req">必須</span></label><input type="text" id="i-first" name="i-first" data-testid="i-first"><p class="err"></p></div>
+          </div>
+          <div class="row">
+            <div class="field" id="f-i-last-kana"><label for="i-last-kana">フリガナ（姓）<span class="req">必須</span></label><input type="text" id="i-last-kana" name="i-last-kana" data-testid="i-last-kana"><p class="err"></p></div>
+            <div class="field" id="f-i-first-kana"><label for="i-first-kana">フリガナ（名）<span class="req">必須</span></label><input type="text" id="i-first-kana" name="i-first-kana" data-testid="i-first-kana"><p class="err"></p></div>
+          </div>
+          <div class="field" id="f-i-relation">
+            <label for="i-relation">契約者から見た続柄<span class="req">必須</span></label>
+            <select id="i-relation" name="i-relation" style="max-width:260px" data-testid="i-relation">
+              <option value="">選択してください</option><option value="配偶者">配偶者</option><option value="子">子</option><option value="父母">父母</option>
+            </select>
+            <p class="err"></p>
+          </div>
+        </fieldset>
+
+        <div class="btns">
+          <button type="button" class="btn-secondary" id="btn-back-2" data-testid="btn-back-2">前へ</button>
+          <button type="button" class="btn-primary" id="next-contractor" data-testid="next-contractor">次へ</button>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="step-3" data-step="3" aria-labelledby="h-step-3">
+        <h2 class="mincho" id="h-step-3">受取人を指定する</h2>
+        <p class="step-desc">保険金を受け取る方を1名指定してください。</p>
+        <fieldset>
+          <legend>保険金受取人</legend>
+          <div class="row">
+            <div class="field" id="f-b-last"><label for="b-last">姓<span class="req">必須</span></label><input type="text" id="b-last" name="b-last" data-testid="b-last"><p class="err"></p></div>
+            <div class="field" id="f-b-first"><label for="b-first">名<span class="req">必須</span></label><input type="text" id="b-first" name="b-first" data-testid="b-first"><p class="err"></p></div>
+          </div>
+          <div class="row">
+            <div class="field" id="f-b-last-kana"><label for="b-last-kana">フリガナ（姓）<span class="req">必須</span></label><input type="text" id="b-last-kana" name="b-last-kana" data-testid="b-last-kana"><p class="err"></p></div>
+            <div class="field" id="f-b-first-kana"><label for="b-first-kana">フリガナ（名）<span class="req">必須</span></label><input type="text" id="b-first-kana" name="b-first-kana" data-testid="b-first-kana"><p class="err"></p></div>
+          </div>
+          <div class="field" id="f-b-relation">
+            <label for="b-relation">保障を受ける方から見た続柄<span class="req">必須</span></label>
+            <select id="b-relation" name="b-relation" style="max-width:260px" data-testid="b-relation">
+              <option value="">選択してください</option><option value="配偶者">配偶者</option><option value="子">子</option><option value="父母">父母</option><option value="兄弟姉妹">兄弟姉妹</option><option value="その他">その他</option>
+            </select>
+            <p class="err"></p>
+          </div>
+          <div class="field hidden" id="f-b-relation-other">
+            <label for="b-relation-other">「その他」を選んだ理由<span class="req">必須</span></label>
+            <textarea id="b-relation-other" name="b-relation-other" placeholder="例：婚約者のため" data-testid="b-relation-other"></textarea>
+            <p class="hint">2親等以内の親族以外を指定する場合は、理由の記入が必要です。</p>
+            <p class="err"></p>
+          </div>
+        </fieldset>
+        <div class="btns">
+          <button type="button" class="btn-secondary" id="btn-back-3" data-testid="btn-back-3">前へ</button>
+          <button type="button" class="btn-primary" id="next-beneficiary" data-testid="next-beneficiary">次へ</button>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="step-4" data-step="4" aria-labelledby="h-step-4">
+        <h2 class="mincho" id="h-step-4">健康状態を告知する</h2>
+        <p class="step-desc">保障を受ける方の健康状態について、ありのままにお答えください。事実と異なる告知をすると、保険金が支払われないことがあります。</p>
+        <fieldset>
+          <legend>身長・体重</legend>
+          <div class="row">
+            <div class="field" id="f-height"><label for="height">身長（cm）<span class="req">必須</span></label><input type="number" id="height" name="height" inputmode="decimal" min="100" max="250" data-testid="height"><p class="err"></p></div>
+            <div class="field" id="f-weight"><label for="weight">体重（kg）<span class="req">必須</span></label><input type="number" id="weight" name="weight" inputmode="decimal" min="20" max="250" data-testid="weight"><p class="err"></p></div>
+          </div>
+          <p class="hint" id="bmi-display" aria-live="polite" data-testid="bmi-display"></p>
+          <div class="panel warn hidden" id="bmi-warn" data-testid="bmi-warn"><p>体格の基準を外れているため、お申込み後に追加の審査を行います。このまま進めます。</p></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>質問事項</legend>
+          <div class="field" id="f-q1">
+            <span class="group-label" id="lbl-q1">1. 最近3か月以内に、医師の診察・検査・治療・投薬を受けたことがありますか。<span class="req">必須</span></span>
+            <div class="choices" role="radiogroup" aria-labelledby="lbl-q1">
+              <label class="choice"><input type="radio" name="q1" id="q1-yes" value="yes" data-testid="q1-yes"><span>はい</span></label>
+              <label class="choice"><input type="radio" name="q1" id="q1-no" value="no" data-testid="q1-no"><span>いいえ</span></label>
+            </div>
+            <p class="err"></p>
+          </div>
+          <div class="field hidden" id="f-q1-detail"><label for="q1-detail">病名・時期・治療内容<span class="req">必須</span></label><textarea id="q1-detail" name="q1-detail" placeholder="例：2026年8月 花粉症 内服薬" data-testid="q1-detail"></textarea><p class="err"></p></div>
+
+          <div class="field" id="f-q2">
+            <span class="group-label" id="lbl-q2">2. 過去5年以内に、病気やけがで7日以上の入院、または手術を受けたことがありますか。<span class="req">必須</span></span>
+            <div class="choices" role="radiogroup" aria-labelledby="lbl-q2">
+              <label class="choice"><input type="radio" name="q2" id="q2-yes" value="yes" data-testid="q2-yes"><span>はい</span></label>
+              <label class="choice"><input type="radio" name="q2" id="q2-no" value="no" data-testid="q2-no"><span>いいえ</span></label>
+            </div>
+            <p class="err"></p>
+          </div>
+          <div class="field hidden" id="f-q2-detail"><label for="q2-detail">病名・時期・入院日数または手術名<span class="req">必須</span></label><textarea id="q2-detail" name="q2-detail" placeholder="例：2023年5月 虫垂炎 手術・入院8日" data-testid="q2-detail"></textarea><p class="err"></p></div>
+
+          <div class="field" id="f-q3">
+            <span class="group-label" id="lbl-q3">3. 過去5年以内に、がん・心疾患・脳血管疾患と診断されたことがありますか。<span class="req">必須</span></span>
+            <div class="choices" role="radiogroup" aria-labelledby="lbl-q3">
+              <label class="choice"><input type="radio" name="q3" id="q3-yes" value="yes" data-testid="q3-yes"><span>はい</span></label>
+              <label class="choice"><input type="radio" name="q3" id="q3-no" value="no" data-testid="q3-no"><span>いいえ</span></label>
+            </div>
+            <p class="err"></p>
+          </div>
+          <div class="panel stop hidden" id="q3-stop" role="alert" data-testid="q3-stop">
+            <p><strong>この内容ではWebからのお申込みをお受けできません。</strong><br>担当者が個別にご案内しますので、お客さま窓口 0120-XXX-XXX（架空）までお問い合わせください。</p>
+          </div>
+        </fieldset>
+        <div class="btns">
+          <button type="button" class="btn-secondary" id="btn-back-4" data-testid="btn-back-4">前へ</button>
+          <button type="button" class="btn-primary" id="next-disclosure" data-testid="next-disclosure">確認画面へ</button>
+        </div>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="step" id="step-5" data-step="5" aria-labelledby="h-step-5">
+        <h2 class="mincho" id="h-step-5">入力内容を確認する</h2>
+        <p class="step-desc">内容に誤りがないか確認してください。修正する場合は各項目の「修正する」を押してください。</p>
+        <div id="confirm-area" data-testid="confirm-area"></div>
+        <fieldset>
+          <legend>同意事項</legend>
+          <div class="field" id="f-agree-terms">
+            <label class="agree"><input type="checkbox" id="agree-terms" name="agree-terms" data-testid="agree-terms"><span>「重要事項説明書（契約概要・注意喚起情報）」「ご契約のしおり・約款」を確認し、内容に同意します。</span></label>
+            <p class="err"></p>
+          </div>
+          <div class="field" id="f-agree-privacy">
+            <label class="agree"><input type="checkbox" id="agree-privacy" name="agree-privacy" data-testid="agree-privacy"><span>個人情報の取扱いについて同意します。</span></label>
+            <p class="err"></p>
+          </div>
+        </fieldset>
+        <div class="btns">
+          <button type="button" class="btn-secondary" id="btn-back-5" data-testid="btn-back-5">前へ</button>
+          <button type="button" class="btn-primary" id="submit-application" data-testid="submit-application">申し込む</button>
+        </div>
+      </section>
+
+      <!-- COMPLETE -->
+      <section class="step" id="step-done" data-step="done" aria-labelledby="h-done">
+        <div class="complete">
+          <div class="seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <h2 class="mincho" id="h-done">お申込みが完了しました</h2>
+          <p>申込番号</p>
+          <div class="app-no" id="application-number" data-testid="application-number"></div>
+          <p id="done-mail" data-testid="done-mail"></p>
+          <p>審査の結果は5営業日ほどでお知らせします。</p>
+          <div class="btns" style="justify-content:center;margin-top:24px">
+            <button type="button" class="btn-secondary" id="btn-restart" data-testid="btn-restart">最初からやり直す</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="quote" id="quote-panel" aria-label="お見積り" data-testid="quote-panel">
+      <div class="quote-head">お見積り</div>
+      <div class="quote-body">
+        <dl>
+          <dt>年齢</dt><dd id="q-age" data-testid="q-age">－</dd>
+          <dt>保険の種類</dt><dd id="q-plan" data-testid="q-plan">－</dd>
+          <dt id="q-coverage-label">保障額</dt><dd id="q-coverage" data-testid="q-coverage">－</dd>
+          <dt>保険期間</dt><dd id="q-term" data-testid="q-term">－</dd>
+          <dt>特約</dt><dd id="q-riders" data-testid="q-riders">なし</dd>
+        </dl>
+        <div class="price">
+          <div class="label" id="q-price-label">月払い保険料</div>
+          <div class="amount" id="q-price" data-testid="q-price">－</div>
+          <p class="note" id="q-note">生年月日と性別を選ぶと計算します。</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+<footer>© みずなら生命（架空の会社）｜テスト自動化デモ用サイト</footer>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var TODAY = new Date();
+  var current = 1;
+  var STEP_TITLES = {1:'プラン選択',2:'ご契約者',3:'受取人',4:'告知',5:'確認',done:'お申込み完了'};
+  var PLAN_NAMES = {term:'定期保険（無解約返戻金型）', medical:'医療保険', whole:'終身保険'};
+  var COVERAGE = {
+    term:{label:'死亡保険金額', opts:[[500,'500万円'],[1000,'1,000万円'],[2000,'2,000万円'],[3000,'3,000万円']], def:1000},
+    medical:{label:'入院日額', opts:[[5000,'5,000円'],[10000,'10,000円'],[15000,'15,000円']], def:5000},
+    whole:{label:'死亡保険金額', opts:[[300,'300万円'],[500,'500万円'],[1000,'1,000万円']], def:500}
+  };
+  var ZIP = {
+    '1000001':'東京都千代田区千代田', '5300001':'大阪府大阪市北区梅田',
+    '4600008':'愛知県名古屋市中区栄', '8120011':'福岡県福岡市博多区博多駅前',
+    '0600001':'北海道札幌市中央区北一条西'
+  };
+  var KANA = /^[ァ-ヶー]+$/;
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function fillBirth(prefix, yFrom, yTo){
+    var y = $(prefix+'-year'), m = $(prefix+'-month'), d = $(prefix+'-day');
+    y.innerHTML = '<option value="">－</option>';
+    for (var i = yTo; i >= yFrom; i--) y.innerHTML += '<option value="'+i+'">'+i+'</option>';
+    m.innerHTML = '<option value="">－</option>';
+    for (var j = 1; j <= 12; j++) m.innerHTML += '<option value="'+j+'">'+j+'</option>';
+    d.innerHTML = '<option value="">－</option>';
+    for (var k = 1; k <= 31; k++) d.innerHTML += '<option value="'+k+'">'+k+'</option>';
+  }
+  var thisYear = TODAY.getFullYear();
+  fillBirth('c-birth', thisYear-90, thisYear-10);
+
+  function readDate(prefix){
+    var y, m, d, single = $(prefix);
+    if (single && single.tagName==='INPUT'){
+      var raw = single.value.trim();
+      if (!raw) return {state:'empty'};
+      var mt = raw.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+      if (!mt) return {state:'format'};
+      y = +mt[1]; m = +mt[2]; d = +mt[3];
+    } else {
+      y = +$(prefix+'-year').value; m = +$(prefix+'-month').value; d = +$(prefix+'-day').value;
+    }
+    if (!y || !m || !d) return {state:'empty'};
+    var dt = new Date(y, m-1, d);
+    if (dt.getFullYear()!==y || dt.getMonth()!==m-1 || dt.getDate()!==d) return {state:'invalid'};
+    if (dt > TODAY) return {state:'future'};
+    var age = TODAY.getFullYear()-y;
+    if (TODAY.getMonth() < m-1 || (TODAY.getMonth()===m-1 && TODAY.getDate() < d)) age--;
+    return {state:'ok', y:y, m:m, d:d, age:age, text:y+'年'+m+'月'+d+'日'};
+  }
+  function radio(name){ var r = document.querySelector('input[name="'+name+'"]:checked'); return r ? r.value : ''; }
+  function val(id){ return $(id).value.trim(); }
+  function yen(n){ return n.toLocaleString('ja-JP'); }
+
+  /* ---------- plan & quote ---------- */
+  function renderCoverage(){
+    var p = radio('plan') || 'term', c = COVERAGE[p], sel = $('coverage'), prev = +sel.value;
+    $('lbl-coverage').firstChild.nodeValue = c.label;
+    sel.innerHTML = '';
+    var keep = false;
+    c.opts.forEach(function(o){ if (o[0]===prev) keep = true; });
+    c.opts.forEach(function(o){
+      var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1];
+      if ((keep && o[0]===prev) || (!keep && o[0]===c.def)) op.selected = true;
+      sel.appendChild(op);
+    });
+    var isTerm = p==='term';
+    $('term').classList.toggle('hidden', !isTerm);
+    $('term-whole-note').classList.toggle('hidden', isTerm);
+  }
+  function calcPremium(){
+    var b = readDate('ins-birth'), g = $('ins-gender').value, p = radio('plan');
+    if (b.state!=='ok' || !g || !p) return null;
+    if (b.age < 20 || b.age > 70) return {ineligible:true, age:b.age};
+    var af = 1 + (b.age-20)*0.045, cov = +$('coverage').value, base;
+    if (p==='term'){ var tf = {10:1, 20:1.15, 30:1.3}[$('term').value]; base = cov*2.2*af*(g==='male'?1:0.78)*tf; }
+    else if (p==='medical'){ base = (cov/1000)*380*af*(g==='male'?1:1.06); }
+    else { base = cov*12*af*(g==='male'?1:0.9); }
+    var cancer = $('rider-cancer').checked ? 600*af*(g==='male'?1:1.1) : 0;
+    var adv = $('rider-advanced').checked ? 110 : 0;
+    var waiver = $('rider-waiver').checked ? (base+cancer)*0.06 : 0;
+    var monthly = Math.round((base+cancer+adv+waiver)/10)*10;
+    var annual = Math.round(monthly*12*0.98/10)*10;
+    return {age:b.age, monthly:monthly, annual:annual};
+  }
+  function riderList(){
+    var r = [];
+    if ($('rider-advanced').checked) r.push('先進医療');
+    if ($('rider-cancer').checked) r.push('がん診断一時金');
+    if ($('rider-waiver').checked) r.push('三大疾病払込免除');
+    return r;
+  }
+  function coverageText(){ var s = $('coverage'); return s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '－'; }
+  function termText(){ return radio('plan')==='term' ? $('term').value+'年' : '終身'; }
+  function updateQuote(){
+    var p = radio('plan'), res = calcPremium(), b = readDate('ins-birth'), annual = radio('payment')==='annual';
+    $('q-age').textContent = b.state==='ok' ? b.age+'歳' : '－';
+    $('q-plan').textContent = PLAN_NAMES[p] || '－';
+    $('q-coverage-label').textContent = p ? COVERAGE[p].label : '保障額';
+    $('q-coverage').textContent = coverageText();
+    $('q-term').textContent = termText();
+    var r = riderList(); $('q-riders').textContent = r.length ? r.join('、') : 'なし';
+    $('q-price-label').textContent = annual ? '年払い保険料' : '月払い保険料';
+    if (!res){ $('q-price').textContent = '－'; $('q-note').textContent = '生年月日と性別を選ぶと計算します。'; return; }
+    if (res.ineligible){ $('q-price').textContent = '－'; $('q-note').textContent = res.age+'歳の方はお申込みいただけません（満20〜70歳）。'; return; }
+    $('q-price').innerHTML = yen(annual ? res.annual : res.monthly)+'<small>円</small>';
+    $('q-note').textContent = annual ? '月払いに換算すると約'+yen(Math.round(res.annual/12))+'円です。' : '年払いにすると年額'+yen(res.annual)+'円になります。';
+  }
+
+  /* ---------- errors ---------- */
+  var errors = [];
+  function clearErrors(scope){
+    scope.querySelectorAll('.field.invalid').forEach(function(f){
+      f.classList.remove('invalid');
+      f.querySelectorAll('[aria-invalid]').forEach(function(i){ i.removeAttribute('aria-invalid'); });
+    });
+    errors = [];
+    var s = $('error-summary'); s.classList.remove('show'); s.innerHTML = '';
+  }
+  function fail(fieldId, msg){
+    var f = $(fieldId); if (!f) return;
+    f.classList.add('invalid');
+    var e = f.querySelector('.err'); if (e) e.textContent = msg;
+    f.querySelectorAll('input,select,textarea').forEach(function(i){ i.setAttribute('aria-invalid','true'); });
+    errors.push({id:fieldId, msg:msg});
+  }
+  function showSummary(){
+    if (!errors.length) return true;
+    var s = $('error-summary');
+    s.innerHTML = '<p><strong>入力内容に誤りがあります（'+errors.length+'件）。</strong>赤く表示された項目を修正してください。</p>';
+    s.classList.add('show');
+    s.focus({preventScroll:true});
+    var first = $(errors[0].id);
+    first.scrollIntoView({block:'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    var inp = first.querySelector('input,select,textarea'); if (inp) setTimeout(function(){ inp.focus({preventScroll:true}); }, 50);
+    return false;
+  }
+  function needText(id, label){ if (!val(id)){ fail('f-'+id, label+'を入力してください。'); return false; } return true; }
+  function needKana(id, label){
+    if (!needText(id, label)) return;
+    if (!KANA.test(val(id))) fail('f-'+id, label+'は全角カタカナで入力してください。');
+  }
+
+  /* ---------- validation per step ---------- */
+  function validate1(){
+    clearErrors($('step-1'));
+    var b = readDate('ins-birth');
+    if (b.state==='empty') fail('f-ins-birth','生年月日を入力してください。');
+    else if (b.state==='format') fail('f-ins-birth','生年月日は「1990/01/15」の形式で入力してください。');
+    else if (b.state==='invalid') fail('f-ins-birth','存在しない日付です。日付を確認してください。');
+    else if (b.state==='future') fail('f-ins-birth','未来の日付は入力できません。');
+    else if (b.age < 20 || b.age > 70) fail('f-ins-birth','お申込みいただけるのは満20歳から満70歳までの方です（現在'+b.age+'歳）。');
+    if (!$('ins-gender').value) fail('f-ins-gender','性別を選択してください。');
+    return showSummary();
+  }
+  function validate2(){
+    clearErrors($('step-2'));
+    needText('contractor-last','姓'); needText('contractor-first','名');
+    needKana('contractor-last-kana','フリガナ（姓）'); needKana('contractor-first-kana','フリガナ（名）');
+    var same = $('same-as-insured').checked;
+    if (!same){
+      var c = readDate('c-birth');
+      if (c.state==='empty') fail('f-c-birth','生年月日を選択してください。');
+      else if (c.state==='invalid') fail('f-c-birth','存在しない日付です。日付を確認してください。');
+      else if (c.state==='future') fail('f-c-birth','未来の日付は選択できません。');
+      else if (c.age < 18) fail('f-c-birth','契約者は満18歳以上の方に限ります。');
+      if (!radio('c-gender')) fail('f-c-gender','性別を選択してください。');
+    }
+    var zip = val('contractor-zip').replace(/[－ー−‐]/g,'-');
+    if (!zip) fail('f-contractor-zip','郵便番号を入力してください。');
+    else if (!/^\d{3}-?\d{4}$/.test(zip)) fail('f-contractor-zip','郵便番号は「123-4567」または「1234567」の形式で入力してください。');
+    needText('contractor-addr1','都道府県・市区町村'); needText('contractor-addr2','番地・建物名');
+    var tel = val('contractor-tel').replace(/-/g,'');
+    if (!tel) fail('f-contractor-tel','電話番号を入力してください。');
+    else if (!/^0\d{9,10}$/.test(tel)) fail('f-contractor-tel','電話番号は0から始まる10桁または11桁の数字で入力してください。');
+    var em = val('contractor-email'), em2 = val('contractor-email-confirm');
+    if (!em) fail('f-contractor-email','メールアドレスを入力してください。');
+    else if (!EMAIL.test(em)) fail('f-contractor-email','メールアドレスの形式が正しくありません。');
+    if (!em2) fail('f-contractor-email-confirm','確認用のメールアドレスを入力してください。');
+    else if (em && em!==em2) fail('f-contractor-email-confirm','メールアドレスが一致しません。');
+    if (!same){
+      needText('i-last','姓'); needText('i-first','名');
+      needKana('i-last-kana','フリガナ（姓）'); needKana('i-first-kana','フリガナ（名）');
+      if (!val('i-relation')) fail('f-i-relation','続柄を選択してください。');
+    }
+    return showSummary();
+  }
+  function validate3(){
+    clearErrors($('step-3'));
+    needText('b-last','姓'); needText('b-first','名');
+    needKana('b-last-kana','フリガナ（姓）'); needKana('b-first-kana','フリガナ（名）');
+    if (!val('b-relation')) fail('f-b-relation','続柄を選択してください。');
+    else if (val('b-relation')==='その他' && !val('b-relation-other')) fail('f-b-relation-other','理由を入力してください。');
+    var same = $('same-as-insured').checked;
+    var insLast = same ? val('contractor-last') : val('i-last'), insFirst = same ? val('contractor-first') : val('i-first');
+    if (val('b-last') && val('b-first') && val('b-last')===insLast && val('b-first')===insFirst)
+      fail('f-b-last','保障を受ける方ご本人は受取人に指定できません。');
+    return showSummary();
+  }
+  function validate4(){
+    clearErrors($('step-4'));
+    var h = parseFloat($('height').value), w = parseFloat($('weight').value);
+    if (!$('height').value) fail('f-height','身長を入力してください。');
+    else if (!(h>=100 && h<=250)) fail('f-height','身長は100〜250cmの範囲で入力してください。');
+    if (!$('weight').value) fail('f-weight','体重を入力してください。');
+    else if (!(w>=20 && w<=250)) fail('f-weight','体重は20〜250kgの範囲で入力してください。');
+    ['q1','q2','q3'].forEach(function(q){
+      if (!radio(q)) fail('f-'+q,'「はい」か「いいえ」を選択してください。');
+    });
+    if (radio('q1')==='yes' && !val('q1-detail')) fail('f-q1-detail','病名・時期・治療内容を入力してください。');
+    if (radio('q2')==='yes' && !val('q2-detail')) fail('f-q2-detail','病名・時期・入院日数または手術名を入力してください。');
+    return showSummary();
+  }
+  function validate5(){
+    clearErrors($('step-5'));
+    if (!$('agree-terms').checked) fail('f-agree-terms','重要事項説明書・約款への同意が必要です。');
+    if (!$('agree-privacy').checked) fail('f-agree-privacy','個人情報の取扱いへの同意が必要です。');
+    return showSummary();
+  }
+
+  /* ---------- confirm ---------- */
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function block(title, step, rows){
+    var h = '<div class="confirm-block" data-testid="confirm-step-'+step+'"><header><h3>'+title+'</h3><button type="button" class="btn-link" data-goto="'+step+'" data-testid="btn-edit-'+step+'">修正する</button></header><dl>';
+    rows.forEach(function(r){ h += '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>'; });
+    return h + '</dl></div>';
+  }
+  function genderText(v){ return v==='male' ? '男性' : v==='female' ? '女性' : '－'; }
+  function renderConfirm(){
+    var res = calcPremium(), annual = radio('payment')==='annual', b = readDate('ins-birth');
+    var same = $('same-as-insured').checked, p = radio('plan');
+    var price = res && !res.ineligible ? yen(annual ? res.annual : res.monthly)+'円（'+(annual?'年払い':'月払い')+'）' : '－';
+    var r = riderList();
+    var html = block('プラン', 1, [
+      ['保険の種類', PLAN_NAMES[p]], [COVERAGE[p].label, coverageText()], ['保険期間', termText()],
+      ['特約', r.length ? r.join('、') : 'なし'], ['保険料', price]
+    ]);
+    var c = same ? b : readDate('c-birth');
+    html += block('契約者', 2, [
+      ['氏名', val('contractor-last')+' '+val('contractor-first')], ['フリガナ', val('contractor-last-kana')+' '+val('contractor-first-kana')],
+      ['生年月日', c.text || '－'], ['性別', genderText(same ? $('ins-gender').value : radio('c-gender'))],
+      ['住所', '〒'+val('contractor-zip')+' '+val('contractor-addr1')+val('contractor-addr2')], ['電話番号', val('contractor-tel')], ['メールアドレス', val('contractor-email')]
+    ]);
+    var ins = same
+      ? [['氏名', val('contractor-last')+' '+val('contractor-first')+'（契約者と同じ）'], ['生年月日', b.text], ['性別', genderText($('ins-gender').value)]]
+      : [['氏名', val('i-last')+' '+val('i-first')], ['フリガナ', val('i-last-kana')+' '+val('i-first-kana')], ['契約者から見た続柄', val('i-relation')], ['生年月日', b.text], ['性別', genderText($('ins-gender').value)]];
+    html += block('保障を受ける方', same ? 1 : 2, ins);
+    var br = [['氏名', val('b-last')+' '+val('b-first')], ['フリガナ', val('b-last-kana')+' '+val('b-first-kana')], ['続柄', val('b-relation')]];
+    if (val('b-relation')==='その他') br.push(['理由', val('b-relation-other')]);
+    html += block('保険金受取人', 3, br);
+    var yn = function(q){ return radio(q)==='yes' ? 'はい' : 'いいえ'; };
+    var tr = [['身長・体重', $('height').value+'cm／'+$('weight').value+'kg'], ['質問1（3か月以内の受診）', yn('q1')+(radio('q1')==='yes' ? '：'+val('q1-detail') : '')], ['質問2（5年以内の入院・手術）', yn('q2')+(radio('q2')==='yes' ? '：'+val('q2-detail') : '')], ['質問3（三大疾病）', yn('q3')]];
+    html += block('告知', 4, tr);
+    $('confirm-area').innerHTML = html;
+  }
+
+  /* ---------- navigation ---------- */
+  function go(step){
+    current = step;
+    document.querySelectorAll('section.step').forEach(function(s){ s.classList.toggle('active', String(s.dataset.step)===String(step)); });
+    document.querySelectorAll('#stepper li').forEach(function(li){
+      var n = +li.dataset.s;
+      li.classList.toggle('current', n===step);
+      li.classList.toggle('done', step==='done' || n < step);
+      if (n===step) li.setAttribute('aria-current','step'); else li.removeAttribute('aria-current');
+    });
+    var s = $('error-summary'); s.classList.remove('show'); s.innerHTML = '';
+    document.title = STEP_TITLES[step]+' | みずなら生命（デモ）';
+    $('quote-panel').classList.toggle('hidden', step==='done');
+    if (step===5) renderConfirm();
+    window.scrollTo({top:0, behavior:'auto'});
+    var h = document.querySelector('section.step.active h2'); if (h){ h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
+  }
+
+  $('next-plan').addEventListener('click', function(){ if (validate1()) go(2); });
+  $('next-contractor').addEventListener('click', function(){ if (validate2()) go(3); });
+  $('next-beneficiary').addEventListener('click', function(){ if (validate3()) go(4); });
+  $('next-disclosure').addEventListener('click', function(){ if (radio('q3')==='yes') return; if (validate4()) go(5); });
+  $('submit-application').addEventListener('click', function(){
+    if (!validate5()) return;
+    var d = TODAY, pad = function(n){ return String(n).padStart(2,'0'); };
+    var no = 'MZL-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'-'+String(Math.floor(10000+Math.random()*90000));
+    $('application-number').textContent = no;
+    $('done-mail').textContent = val('contractor-email')+' あてに受付完了のお知らせを送信しました（デモのため実際には送信されません）。';
+    go('done');
+  });
+  [2,3,4,5].forEach(function(n){ $('btn-back-'+n).addEventListener('click', function(){ go(n-1); }); });
+  $('confirm-area').addEventListener('click', function(e){ var t = e.target.closest('[data-goto]'); if (t) go(+t.dataset.goto); });
+  $('btn-restart').addEventListener('click', function(){ location.reload(); });
+
+  /* ---------- dynamic UI ---------- */
+  document.querySelectorAll('input[name="plan"]').forEach(function(r){ r.addEventListener('change', function(){ renderCoverage(); updateQuote(); }); });
+  $('ins-birth').addEventListener('input', updateQuote);
+  ['ins-birth','ins-gender','coverage','term','rider-advanced','rider-cancer','rider-waiver'].forEach(function(id){ $(id).addEventListener('change', updateQuote); });
+  document.querySelectorAll('input[name="payment"]').forEach(function(r){ r.addEventListener('change', updateQuote); });
+
+  function syncSame(){
+    var same = $('same-as-insured').checked;
+    $('contractor-extra').classList.toggle('hidden', same);
+    $('insured-block').classList.toggle('hidden', !same ? false : true);
+  }
+  $('same-as-insured').addEventListener('change', syncSame);
+
+  var lastZip = '';
+  $('contractor-zip').addEventListener('input', function(){
+    var raw = val('contractor-zip').replace(/[^\d]/g,''), out = $('zip-result');
+    if (raw.length!==7 || raw===lastZip) { if (raw.length!==7) lastZip = ''; return; }
+    lastZip = raw;
+    if (ZIP[raw]){ $('contractor-addr1').value = ZIP[raw]; out.textContent = '住所を自動入力しました：'+ZIP[raw]; $('f-contractor-addr1').classList.remove('invalid'); }
+    else { out.textContent = '該当する住所が見つかりません。都道府県・市区町村を直接入力してください。'; }
+  });
+
+  $('b-relation').addEventListener('change', function(){ $('f-b-relation-other').classList.toggle('hidden', this.value!=='その他'); });
+
+  function syncQ(q){
+    var yes = radio(q)==='yes';
+    if (q==='q3'){ $('q3-stop').classList.toggle('hidden', !yes); $('next-disclosure').disabled = yes; }
+    else $('f-'+q+'-detail').classList.toggle('hidden', !yes);
+  }
+  ['q1','q2','q3'].forEach(function(q){ document.querySelectorAll('input[name="'+q+'"]').forEach(function(r){ r.addEventListener('change', function(){ syncQ(q); }); }); });
+
+  function updateBmi(){
+    var h = parseFloat($('height').value), w = parseFloat($('weight').value);
+    if (h>=100 && h<=250 && w>=20 && w<=250){
+      var bmi = w/Math.pow(h/100,2);
+      $('bmi-display').textContent = 'BMI：'+bmi.toFixed(1);
+      $('bmi-warn').classList.toggle('hidden', !(bmi>=35 || bmi<15));
+    } else { $('bmi-display').textContent = ''; $('bmi-warn').classList.add('hidden'); }
+  }
+  $('height').addEventListener('input', updateBmi);
+  $('weight').addEventListener('input', updateBmi);
+
+  // clear a field's error as the user fixes it
+  document.addEventListener('input', function(e){ var f = e.target.closest && e.target.closest('.field.invalid'); if (f){ f.classList.remove('invalid'); f.querySelectorAll('[aria-invalid]').forEach(function(i){ i.removeAttribute('aria-invalid'); }); } });
+  document.addEventListener('change', function(e){ var f = e.target.closest && e.target.closest('.field.invalid'); if (f && e.target.type!=='text'){ f.classList.remove('invalid'); } });
+
+  renderCoverage(); syncSame(); updateQuote(); go(1);
+})();
+</script>
+</body>
+</html>

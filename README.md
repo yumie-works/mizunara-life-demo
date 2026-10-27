@@ -10,6 +10,7 @@
 | v1 | https://yumie-works.github.io/mizunara-life-demo/ | 基本版 |
 | v2 | https://yumie-works.github.io/mizunara-life-demo/v2.html | v1から文言・ロケーターのみ変更（動作は同じ） |
 | v2-1 | https://yumie-works.github.io/mizunara-life-demo/v2-1.html | v2から、表示文言・申込番号の形式を一部変更 |
+| v3 | https://yumie-works.github.io/mizunara-life-demo/v3.html | v2-1から、入力部品を一部変更（生年月日・性別・住所の自動入力） |
 
 ## 申込の流れ
 
@@ -77,12 +78,23 @@
 
 プラン選択画面のカード名（定期保険）は変更していません。
 
+## v3での変更点（v2-1との差分）
+
+| 箇所 | v2-1 | v3 |
+|---|---|---|
+| 被保険者の生年月日 | 年・月・日の3つのプルダウン（ins-birth-year／month／day） | 1つのテキスト入力欄（ins-birth）。「1990/01/15」の形式で入力 |
+| 被保険者の性別 | ラジオボタン（ins-gender-male／female） | プルダウン（ins-gender） |
+| 住所の入力 | 郵便番号を入れて「住所自動入力」ボタン（zip-autofill）を押す | ボタンを廃止。郵便番号を7桁入力すると自動で住所が入る |
+
+契約者の生年月日・性別（「契約者本人が保障を受ける」をオフにしたときの欄）は変更していません。
+
 ## ファイル構成
 
 ```
 index.html   … v1
 v2.html      … v2
 v2-1.html    … v2-1
+v3.html      … v3
 README.md    … このファイル
 ```
 
